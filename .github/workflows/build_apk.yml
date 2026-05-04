@@ -28,7 +28,7 @@ jobs:
           buildozer android debug 2>&1 | tail -100
 
       - name: APK kaydet
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: KutukSorgulama-APK
           path: bin/*.apk
