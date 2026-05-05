@@ -27,7 +27,7 @@ jobs:
 
       - name: buildozer.spec hazirla
         run: |
-          sed -i 's/source.dir = src/source.dir = ./' buildozer.spec
+          sed -i 's/source.dir = ./source.dir = ./' buildozer.spec
           sed -i 's/requirements = .*/requirements = python3,kivy==2.3.0/' buildozer.spec
 
       - name: APK derle
