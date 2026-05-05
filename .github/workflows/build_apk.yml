@@ -25,22 +25,39 @@ jobs:
           sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev cmake libffi-dev libssl-dev build-essential
           pip install buildozer==1.5.0 cython==0.29.37
 
-      - name: Hazirla
+      - name: Proje hazirla
         run: |
-          mkdir -p myapp
-          cp main.py myapp/main.py
-          cp buildozer.spec myapp/buildozer.spec
-          sed -i 's/source.dir = .*/source.dir = ./' myapp/buildozer.spec
-          sed -i 's/requirements = .*/requirements = python3,kivy==2.3.0/' myapp/buildozer.spec
+          mkdir -p /tmp/kutuk
+          cp src/main.py /tmp/kutuk/main.py 2>/dev/null || cp main.py /tmp/kutuk/main.py
+          cd /tmp/kutuk
+          cat > buildozer.spec << 'EOF'
+[app]
+title = Kutuk Sorgulama
+package.name = kutuksorgulama
+package.domain = org.kutuk
+source.dir = .
+source.include_exts = py
+version = 1.0
+requirements = python3,kivy==2.3.0
+orientation = landscape
+android.minapi = 21
+android.ndk = 25b
+android.accept_sdk_license = True
+android.archs = arm64-v8a
+fullscreen = 0
+[buildozer]
+log_level = 2
+EOF
+          ls -la
 
       - name: APK derle
-        working-directory: myapp
         run: |
+          cd /tmp/kutuk
           yes | buildozer android debug 2>&1 | tail -200
 
       - name: APK kaydet
         uses: actions/upload-artifact@v4
         with:
           name: KutukSorgulama-APK
-          path: myapp/bin/*.apk
+          path: /tmp/kutuk/bin/*.apk
           retention-days: 30
