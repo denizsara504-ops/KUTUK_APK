@@ -25,12 +25,16 @@ jobs:
           sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev cmake libffi-dev libssl-dev build-essential
           pip install buildozer==1.5.0 cython==0.29.37
 
-      - name: buildozer.spec hazirla
+      - name: Hazirla
         run: |
-          sed -i 's/source.dir = ./source.dir = ./' buildozer.spec
-          sed -i 's/requirements = .*/requirements = python3,kivy==2.3.0/' buildozer.spec
+          mkdir -p myapp
+          cp main.py myapp/main.py
+          cp buildozer.spec myapp/buildozer.spec
+          sed -i 's/source.dir = .*/source.dir = ./' myapp/buildozer.spec
+          sed -i 's/requirements = .*/requirements = python3,kivy==2.3.0/' myapp/buildozer.spec
 
       - name: APK derle
+        working-directory: myapp
         run: |
           yes | buildozer android debug 2>&1 | tail -200
 
@@ -38,5 +42,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: KutukSorgulama-APK
-          path: bin/*.apk
+          path: myapp/bin/*.apk
           retention-days: 30
